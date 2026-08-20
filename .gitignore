@@ -1,0 +1,11 @@
+build/
+out/
+!docs/images/
+__pycache__/
+*.pyc
+*.so
+*.o
+*.a
+.pytest_cache/
+*.egg-info/
+dist/
