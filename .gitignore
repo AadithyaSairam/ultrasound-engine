@@ -3,9 +3,20 @@ out/
 !docs/images/
 __pycache__/
 *.pyc
-*.so
-*.o
-*.a
 .pytest_cache/
 *.egg-info/
 dist/
+_skbuild/
+.venv/
+venv/
+
+# Compiled extension: the build writes it into python/usx/ next to the
+# package, so it has to be ignored here rather than only under build/.
+*.so
+*.pyd
+*.dylib
+*.dll
+*.o
+*.a
+*.lib
+*.exp

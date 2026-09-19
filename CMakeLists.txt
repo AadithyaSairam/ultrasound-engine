@@ -70,8 +70,14 @@ if(USX_BUILD_PYTHON)
 
   pybind11_add_module(_usx bindings/pymodule.cpp)
   target_link_libraries(_usx PRIVATE usx_core)
+  # The trailing `$<0:>` is an empty generator expression, and it matters: on
+  # multi-config generators (Visual Studio, Xcode) CMake otherwise appends
+  # `/$<CONFIG>` to LIBRARY_OUTPUT_DIRECTORY, so the module lands in
+  # `python/usx/Release/` and neither the editable install nor
+  # `wheel.packages = ["python/usx"]` can find it. Naming a generator
+  # expression suppresses that per-config suffix.
   set_target_properties(_usx PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/python/usx"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/python/usx$<0:>"
   )
 endif()
 

@@ -1,5 +1,10 @@
 # usx — an ultrasound imaging engine, built from scratch
 
+[![CI](https://github.com/AadithyaSairam/ultrasound-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/AadithyaSairam/ultrasound-engine/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![C++17](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
+
 A real-time ultrasound imaging engine written from first principles: raw
 per-element RF in, live complex images out, with the quantitative estimators
 (Doppler, elastography) that those images are the input to.
@@ -185,4 +190,4 @@ The full list, with what each omission would take to fix, is at the end of
 
 ## Licence
 
-MIT.
+MIT — see [LICENSE](LICENSE).

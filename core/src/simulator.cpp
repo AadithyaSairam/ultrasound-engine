@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <numeric>
 
 #include "usx/geometry.hpp"
@@ -259,6 +260,12 @@ ChannelData Simulator::simulate(const std::vector<Transmit>& transmits,
     if (active.empty())
       for (int i = 0; i < n_ch; ++i) active.push_back(i);
 
+    // Signed, because MSVC implements only OpenMP 2.0, whose `for` construct
+    // requires a signed integral index variable. Unsigned works on the
+    // GCC/Clang OpenMP 3.0+ path but will not compile on MSVC.
+    const std::ptrdiff_t n_scat =
+        static_cast<std::ptrdiff_t>(phantom.scatterers.size());
+
 #ifdef _OPENMP
 #pragma omp parallel
 #endif
@@ -273,8 +280,8 @@ ChannelData Simulator::simulate(const std::vector<Transmit>& transmits,
 #ifdef _OPENMP
 #pragma omp for schedule(static)
 #endif
-      for (std::size_t si = 0; si < phantom.scatterers.size(); ++si) {
-        const Scatterer& sc = phantom.scatterers[si];
+      for (std::ptrdiff_t si = 0; si < n_scat; ++si) {
+        const Scatterer& sc = phantom.scatterers[static_cast<std::size_t>(si)];
         if (sc.amplitude == 0.0f) continue;
 
         Vec3 pos = sc.position;
