@@ -190,4 +190,4 @@ The full list, with what each omission would take to fix, is at the end of
 
 ## Licence
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
