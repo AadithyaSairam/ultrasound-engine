@@ -1,4 +1,4 @@
-# usx — an ultrasound imaging engine, built from scratch
+# usx: an ultrasound imaging engine, built from scratch
 
 [![CI](https://github.com/AadithyaSairam/ultrasound-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/AadithyaSairam/ultrasound-engine/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -11,13 +11,13 @@ per-element RF in, live complex images out, with the quantitative estimators
 
 The C++ core does the acoustics, beamforming and estimation; Python drives it,
 ingests data, measures image quality and renders. Nothing here wraps an existing
-imaging library — the delay laws, the demodulator, the beamformers, the wall
+imaging library: the delay laws, the demodulator, the beamformers, the wall
 filter and the velocity estimators are all implemented directly, and the code is
 written to be read.
 
 There is no hardware requirement. A point-scatterer acoustic simulator ships with
 the engine, so the whole pipeline runs, tests and benchmarks from a clean
-checkout with known ground truth — which is also what makes the test suite able
+checkout with known ground truth, which is also what makes the test suite able
 to assert on physics rather than on "it didn't crash".
 
 ![B-mode image of a speckle phantom with an anechoic cyst and wire targets](docs/images/bmode.png)
@@ -35,7 +35,7 @@ Rayleigh value of 1.91; measured lateral resolution 0.82 mm at 5 MHz.*
 
 *The same acquisition through four combiners. See
 [why the metrics matter more than the pictures](docs/THEORY.md#7-judging-a-beamformer)
-— the coherence factor's spectacular −93 dB contrast comes with a speckle SNR of
+, the coherence factor's spectacular -93 dB contrast comes with a speckle SNR of
 0.89, meaning it destroyed the texture along with the clutter.*
 
 ## What it does
@@ -53,7 +53,7 @@ Rayleigh value of 1.91; measured lateral resolution 0.82 mm at 5 MHz.*
 - Envelope detection, TGC, log compression, and polar-to-Cartesian scan
   conversion for sector formats.
 
-**Quantitative** — the reason the engine's output is complex IQ and not a picture
+**Quantitative.** This is why the engine's output is complex IQ and not a picture.
 
 - Colour flow with a polynomial-regression clutter filter and the Loupas 2-D
   autocorrelation velocity estimator.
@@ -61,7 +61,7 @@ Rayleigh value of 1.91; measured lateral resolution 0.82 mm at 5 MHz.*
 - Sub-wavelength axial displacement tracking and least-squares strain
   estimation, for elastography.
 
-**Measurement** — because "looks sharper" is not a result
+**Measurement.** Because "looks sharper" is not a result.
 
 - CNR, gCNR, contrast, speckle SNR, and point-spread-function FWHM/sidelobe
   measurement, so beamformer changes are argued with numbers.
@@ -86,7 +86,7 @@ pytest tests/            # Python-level tests
 The forward simulation is the slow part of the demos, not the imaging pipeline: a
 speckle phantom has tens of thousands of scatterers and the simulator sums every
 element's contribution at each one, which takes a minute or two. The beamforming
-that follows takes milliseconds — see [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
+that follows takes milliseconds. See [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 
 ## The API in twenty lines
 
@@ -101,11 +101,11 @@ sim     = usx.Simulator(probe, medium, acq)
 phantom = usx.phantoms.cyst_phantom(probe, medium)
 txs     = sim.make_plane_waves(usx.angles_deg(-9, 9, 11))
 
-raw  = sim.simulate(txs, phantom)          # (11, 128, N) float32 RF — zero-copy view
+raw  = sim.simulate(txs, phantom)          # (11, 128, N) float32 RF (zero-copy view)
 grid = usx.grid_for(probe, 0.005, 0.05, 256, 640)
 
 pipe  = usx.ImagingPipeline(grid)
-frame = pipe.process_frame(raw)            # complex64 (256, 640) — keep this
+frame = pipe.process_frame(raw)            # complex64 (256, 640); keep this
 print(pipe.stats)                          # per-stage timing
 
 bmode = usx.to_bmode(frame)                # only now is phase discarded
@@ -126,7 +126,7 @@ class RawSource:
 
 `SimulatedSource` synthesises data from a phantom, `FileSource` replays a
 self-describing `.npz` recording, and `ArraySource` adapts any in-memory
-`(events, channels, samples)` array — which is the class to subclass when
+`(events, channels, samples)` array, which is the class to subclass when
 bringing up real hardware or loading a public dataset such as PICMUS. Nothing
 downstream of the source knows or cares which one it is.
 
@@ -145,29 +145,29 @@ slightly out of focus.
 **The simulator does not use the beamformer's wavefront model.** The beamformer
 assumes an idealized wavefront; the simulator sums each element's true
 contribution, so it reproduces diffraction, finite-aperture effects and edge
-waves that the idealization ignores. That asymmetry is deliberate — it means
+waves that the idealization ignores. That asymmetry is deliberate: it means
 beamforming simulated data actually tests the delay model instead of confirming
 itself.
 
 **Metrics are reported together.** The adaptive beamformers are non-linear and
 can improve contrast while destroying the speckle texture a reader depends on.
 `usx compare` prints resolution, contrast, gCNR *and* speckle SNR side by side
-for exactly that reason — see [docs/THEORY.md](docs/THEORY.md#judging-a-beamformer).
+for exactly that reason. See [docs/THEORY.md](docs/THEORY.md#judging-a-beamformer).
 
 ## Documentation
 
-- [docs/THEORY.md](docs/THEORY.md) — the physics and the mathematics, worked
+- [docs/THEORY.md](docs/THEORY.md): the physics and the mathematics, worked
   through: wave propagation, delay laws, the `t = 0` convention, why IQ, the
   beamformers, Doppler, elastography, and an honest list of what is not modelled.
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the pieces fit, what the
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how the pieces fit, what the
   data structures are, and where to add things.
-- [docs/PERFORMANCE.md](docs/PERFORMANCE.md) — measured timings, where the cost
+- [docs/PERFORMANCE.md](docs/PERFORMANCE.md): measured timings, where the cost
   is, what was optimised and why, and what a GPU port would actually buy.
 
 ## Repository layout
 
 ```
-core/include/usx/    public headers — the engine's interface and its reasoning
+core/include/usx/    public headers, the engine's interface and its reasoning
 core/src/            implementation
 core/tests/          C++ physics tests and the benchmark
 bindings/            pybind11 module (zero-copy numpy views, GIL released)
